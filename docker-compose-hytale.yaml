@@ -1,0 +1,20 @@
+version: '3'
+services:
+  hytale-server:
+    image: eclipse-temurin:25  # Usamos la imagen oficial de Java 25
+    container_name: hytale-server
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    ports:
+      - "5520:5520/udp"  # Puerto por defecto de Hytale (IMPORTANTE: es UDP)
+    volumes:
+      - /DATA/hytale:/hytale  # Mapea tu carpeta del NAS a la carpeta /hytale del contenedor
+    working_dir: /hytale
+    command: ["java", "-XX:AOTCache=/hytale/HytaleServer.aot", "-jar", "/hytale/HytaleServer.jar", "--assets", "/hytale/Assets.zip"]
+    environment:
+      - TZ=Europe/Madrid  # Cambia esto a tu zona horaria si quieres
+    deploy:
+      resources:
+        limits:
+          memory: 8G  # Hytale recomienda al menos 4GB, ponle 6G u 8G si tu NAS lo permite
